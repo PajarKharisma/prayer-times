@@ -21,7 +21,7 @@ A lightweight macOS menu bar app for Islamic prayer times (jadwal sholat), built
 
 | Today | This Month | Settings |
 |-------|------------|----------|
-| ![Today](img/today.png) | ![This Month](img/this-month.png) | ![Settings](img/setting.png) |
+| ![Today](img/today.png) | ![This Month](img/this-month.png) | ![Settings](img/settings.png) |
 
 ## Prerequisites
 
