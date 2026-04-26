@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jadwal Bulan Ini</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    html, body { overflow: auto; }
+    body { padding: 0; background: rgba(252,252,252,0.97); }
+    .app { width: 100%; border-radius: 0; box-shadow: none; min-height: 100vh; }
+    .month-list {
+      overflow-y: auto;
+      max-height: calc(100vh - 90px);
+    }
+    .month-list::-webkit-scrollbar { width: 4px; }
+    .month-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <div x-data="monthApp()" x-init="init()" class="app">
+
+    <div class="header">
+      <div class="header-title">
+        <span class="mosque-icon">📅</span>
+        <div>
+          <div class="app-title">Jadwal Bulan Ini</div>
+          <div class="date-label" x-text="monthTitle"></div>
+        </div>
+      </div>
+    </div>
+
+    <div x-show="loading" class="loading" style="display:none">Memuat jadwal...</div>
+    <div x-show="error" class="error" x-text="error" style="display:none"></div>
+
+    <div x-show="!loading && !error" class="month-list" x-ref="monthList" style="display:none">
+      <template x-for="day in monthSchedule" :key="day.tanggal">
+        <div class="month-row" :class="{ 'today-row': day.tanggal === todayNum }">
+          <div class="month-row-header">
+            <span class="month-day-num" x-text="day.tanggal"></span>
+            <span class="month-day-name" x-text="day.hari"></span>
+            <span class="today-chip" x-show="day.tanggal === todayNum" style="display:none">Hari ini</span>
+          </div>
+          <div class="month-times">
+            <template x-for="p in prayers" :key="p.key">
+              <div class="month-time-item">
+                <span class="month-time-label" x-text="p.name"></span>
+                <span class="month-time-val" x-text="day[p.key] || '-'"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div class="footer">
+      <a href="https://github.com/PajarKharisma" target="_blank">Powered by @PajarKharisma</a>
+    </div>
+
+  </div>
+  <script src="month.js"></script>
+</body>
+</html>

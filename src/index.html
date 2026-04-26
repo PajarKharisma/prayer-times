@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jadwal Sholat</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div x-data="prayApp()" x-init="init()" class="app">
+
+    <!-- ══════════════ SETTINGS VIEW ══════════════ -->
+    <div x-show="view === 'settings'" style="display:none">
+      <div class="header">
+        <button class="icon-btn" @click="view = 'main'" title="Kembali">←</button>
+        <div class="header-title-center">Pengaturan</div>
+        <div style="width:30px"></div>
+      </div>
+      <div class="settings-body">
+        <label class="field-label">Provinsi</label>
+        <select class="select-input" x-model="selectedProvince" @change="onProvinceChange()" :disabled="loadingProvinces">
+          <option value="">-- Pilih Provinsi --</option>
+          <template x-for="prov in provinces" :key="prov">
+            <option :value="prov" x-text="prov"></option>
+          </template>
+        </select>
+        <label class="field-label" style="margin-top:12px">Kota / Kabupaten</label>
+        <select class="select-input" x-model="selectedCity" :disabled="!selectedProvince || loadingCities">
+          <option value="">-- Pilih Kota --</option>
+          <template x-for="city in cities" :key="city">
+            <option :value="city" x-text="city"></option>
+          </template>
+        </select>
+        <div x-show="settingsError" class="error" x-text="settingsError" style="display:none"></div>
+        <button class="btn-primary" style="margin-top:16px"
+          @click="saveSettings()"
+          :disabled="!selectedProvince || !selectedCity || savingSettings">
+          <span x-show="!savingSettings">Simpan</span>
+          <span x-show="savingSettings" style="display:none">Menyimpan...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════ MAIN VIEW ══════════════ -->
+    <div x-show="view === 'main'" style="display:none">
+      <div class="header">
+        <div class="header-title">
+          <span class="mosque-icon">🕌</span>
+          <div>
+            <div class="app-title">Jadwal Sholat</div>
+            <div class="date-label" x-text="todayLabel"></div>
+          </div>
+        </div>
+        <button class="icon-btn" @click="view = 'settings'; onViewSettings()" title="Pengaturan">⚙</button>
+      </div>
+      <div class="location-label" x-show="settings.city" style="display:none">
+        📍 <span x-text="settings.city"></span>
+      </div>
+      <div x-show="!settings.city" class="empty-state" style="display:none">
+        <p>Belum ada lokasi dipilih.</p>
+        <button class="btn-primary" @click="view = 'settings'; onViewSettings()">Atur Lokasi</button>
+      </div>
+      <div x-show="settings.city" style="display:none">
+        <div x-show="loading" class="loading" style="display:none">Memuat jadwal...</div>
+        <div x-show="error" class="error" x-text="error" style="display:none"></div>
+        <div x-show="!loading && !error" class="prayer-list" style="display:none">
+          <template x-for="prayer in prayers" :key="prayer.key">
+            <div class="prayer-row" :class="{ 'next-prayer': prayer.key === nextPrayer }">
+              <div class="prayer-info">
+                <span class="prayer-icon" x-text="prayer.icon"></span>
+                <span class="prayer-name" x-text="prayer.name"></span>
+                <span class="next-badge" x-show="prayer.key === nextPrayer" style="display:none">Berikutnya</span>
+              </div>
+              <span class="prayer-time" x-text="todaySchedule && todaySchedule[prayer.key] || '-'"></span>
+            </div>
+          </template>
+        </div>
+        <div class="month-open-row">
+          <button class="btn-month" @click="openMonthWindow()">📅 Jadwal Bulan Ini</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <a href="https://github.com/PajarKharisma" target="_blank">Powered by @PajarKharisma</a>
+    </div>
+
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
