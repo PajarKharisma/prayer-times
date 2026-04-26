@@ -1,7 +1,7 @@
 {
-  "productName": "pray-schedule",
+  "productName": "prayer-times",
   "version": "0.1.0",
-  "identifier": "com.pajarkharisma.pray-schedule",
+  "identifier": "com.pajarkharisma.prayer-times",
   "build": {
     "frontendDist": "../src"
   },

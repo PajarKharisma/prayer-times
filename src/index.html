@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div x-data="prayApp()" x-init="init()" class="app">
+  <div x-data="prayApp()" x-init="init()" class="app" @contextmenu.prevent>
 
     <!-- ══════════════ SETTINGS VIEW ══════════════ -->
     <div x-show="view === 'settings'" style="display:none">
@@ -52,7 +52,10 @@
             <div class="date-label" x-text="todayLabel"></div>
           </div>
         </div>
-        <button class="icon-btn" @click="view = 'settings'; onViewSettings()" title="Pengaturan">⚙</button>
+        <div style="display:flex;gap:6px">
+          <button class="icon-btn" @click="view = 'settings'; onViewSettings()" title="Pengaturan">⚙</button>
+          <button class="icon-btn icon-btn-exit" @click="exitApp()" title="Keluar">✕</button>
+        </div>
       </div>
       <div class="location-label" x-show="settings.city" style="display:none">
         📍 <span x-text="settings.city"></span>
@@ -85,6 +88,18 @@
     <!-- Footer -->
     <div class="footer">
       <a href="https://github.com/PajarKharisma" target="_blank">Powered by @PajarKharisma</a>
+    </div>
+
+    <!-- ══════════════ EXIT CONFIRM DIALOG ══════════════ -->
+    <div x-show="confirmingExit" class="dialog-overlay" style="display:none">
+      <div class="dialog-box">
+        <div class="dialog-title">Keluar Aplikasi?</div>
+        <div class="dialog-msg">Notifikasi waktu sholat akan berhenti.</div>
+        <div class="dialog-actions">
+          <button class="dialog-btn dialog-btn-cancel" @click="confirmingExit = false">Batal</button>
+          <button class="dialog-btn dialog-btn-confirm" @click="confirmExit()">Keluar</button>
+        </div>
+      </div>
     </div>
 
   </div>

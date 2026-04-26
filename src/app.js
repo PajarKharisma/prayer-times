@@ -3,6 +3,7 @@ const { invoke } = window.__TAURI__.core;
 function prayApp() {
   return {
     view: 'main',
+    confirmingExit: false,
 
     // State
     loading: false,
@@ -176,6 +177,18 @@ function prayApp() {
         await invoke('open_month_window');
       } catch (e) {
         console.error('Failed to open month window:', e);
+      }
+    },
+
+    exitApp() {
+      this.confirmingExit = true;
+    },
+
+    async confirmExit() {
+      try {
+        await invoke('exit_app');
+      } catch (e) {
+        console.error('Failed to exit:', e);
       }
     },
   };

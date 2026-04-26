@@ -6,7 +6,7 @@ use tauri_plugin_store::StoreExt;
 
 #[tauri::command]
 pub async fn get_provinces(app: tauri::AppHandle) -> Result<Vec<Value>, String> {
-    let store = app.store("pray-schedule-store.json").map_err(|e| e.to_string())?;
+    let store = app.store("prayer-times-store.json").map_err(|e| e.to_string())?;
 
     // Cache: return if already stored
     if let Some(cached) = store.get("provinces") {
@@ -28,7 +28,7 @@ pub async fn get_provinces(app: tauri::AppHandle) -> Result<Vec<Value>, String> 
 
 #[tauri::command]
 pub async fn get_cities(app: tauri::AppHandle, province: String) -> Result<Vec<Value>, String> {
-    let store = app.store("pray-schedule-store.json").map_err(|e| e.to_string())?;
+    let store = app.store("prayer-times-store.json").map_err(|e| e.to_string())?;
 
     let cache_key = format!("cities_{}", province);
 
@@ -57,7 +57,7 @@ pub async fn get_monthly_schedule(
     month: u32,
     year: i32,
 ) -> Result<Vec<Value>, String> {
-    let store = app.store("pray-schedule-store.json").map_err(|e| e.to_string())?;
+    let store = app.store("prayer-times-store.json").map_err(|e| e.to_string())?;
 
     let cache_key = format!("schedule_{}_{}_{:02}_{}", province, city, month, year);
 
@@ -86,7 +86,7 @@ pub struct Settings {
 
 #[tauri::command]
 pub async fn get_settings(app: tauri::AppHandle) -> Result<Settings, String> {
-    let store = app.store("pray-schedule-store.json").map_err(|e| e.to_string())?;
+    let store = app.store("prayer-times-store.json").map_err(|e| e.to_string())?;
 
     let province = store
         .get("selected_province")
@@ -105,7 +105,7 @@ pub async fn save_settings(
     province: String,
     city: String,
 ) -> Result<(), String> {
-    let store = app.store("pray-schedule-store.json").map_err(|e| e.to_string())?;
+    let store = app.store("prayer-times-store.json").map_err(|e| e.to_string())?;
 
     store.set("selected_province", Value::String(province));
     store.set("selected_city", Value::String(city));

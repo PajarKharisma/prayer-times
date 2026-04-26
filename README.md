@@ -55,8 +55,8 @@ cargo install tauri-cli --version "^2" --locked
 ### 4. Run in development mode
 
 ```bash
-git clone https://github.com/PajarKharisma/pray-schedule.git
-cd pray-schedule
+git clone https://github.com/PajarKharisma/prayer-times.git
+cd prayer-times
 cargo tauri dev
 ```
 
@@ -92,7 +92,7 @@ The `.app` bundle will be in `src-tauri/target/release/bundle/macos/`.
 ## Project Structure
 
 ```
-pray-schedule/
+prayer-times/
 ├── src/                  # Frontend (HTML, CSS, JS)
 │   ├── index.html        # Main popup UI
 │   ├── month.html        # Monthly schedule window

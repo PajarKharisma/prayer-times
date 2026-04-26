@@ -26,7 +26,7 @@ fn check_prayer_times(app: &AppHandle) {
     let current_time = now.format("%H:%M").to_string();
 
     // Load store synchronously by blocking on async
-    let store = match app.store("pray-schedule-store.json") {
+    let store = match app.store("prayer-times-store.json") {
         Ok(s) => s,
         Err(_) => return,
     };

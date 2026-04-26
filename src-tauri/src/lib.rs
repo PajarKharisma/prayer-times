@@ -28,13 +28,16 @@ pub fn run() {
                 .tooltip("Jadwal Sholat")
                 .on_tray_icon_event(|tray, event| {
                     if let TrayIconEvent::Click {
-                        button: MouseButton::Left,
+                        button,
                         button_state: MouseButtonState::Up,
                         ..
                     } = event
                     {
                         let app = tray.app_handle();
-                        toggle_popup(app);
+                        match button {
+                            MouseButton::Left | MouseButton::Right => toggle_popup(app),
+                            _ => {}
+                        }
                     }
                 })
                 .build(app)?;
@@ -51,9 +54,15 @@ pub fn run() {
             commands::get_settings,
             commands::save_settings,
             open_month_window,
+            exit_app,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn exit_app(app: tauri::AppHandle) {
+    app.exit(0);
 }
 
 fn load_tray_icon(_app: &tauri::AppHandle) -> Image<'static> {
