@@ -15,6 +15,7 @@ function prayApp() {
     todayLabel: '',
     todayNum: new Date().getDate(),
     monthTitle: '',
+    lastLoadedDate: null, // 'YYYY-MM-DD' of last schedule fetch
 
     prayers: [
       { key: 'subuh',   name: 'Subuh',   icon: '🌙' },
@@ -42,6 +43,48 @@ function prayApp() {
       this.monthTitle = `${months[now.getMonth()]} ${now.getFullYear()}`;
       await this.loadSettings();
       if (this.settings.city) {
+        await this.loadSchedule();
+      }
+
+      // Refresh whenever the window becomes visible again
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          this.onVisible();
+        }
+      });
+    },
+
+    async onVisible() {
+      const now = new Date();
+      const todayKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+
+      // Always recompute which prayer is next
+      if (this.todaySchedule) this.computeNextPrayer(now);
+
+      if (this.lastLoadedDate === todayKey) return;
+
+      // Day has changed — update labels
+      this.todayLabel = this.formatDate(now);
+      this.todayNum = now.getDate();
+      const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      this.monthTitle = `${months[now.getMonth()]} ${now.getFullYear()}`;
+
+      if (!this.settings.city) return;
+
+      // If month is the same, just re-pick today's entry from cached data
+      const [loadedYear, loadedMonth] = (this.lastLoadedDate || '').split('-').map(Number);
+      if (loadedYear === now.getFullYear() && loadedMonth === now.getMonth()) {
+        const today = now.getDate();
+        const entry = this.monthSchedule.find(d => d.tanggal === today || d.tanggal === String(today));
+        if (entry) {
+          this.todaySchedule = entry;
+          this.computeNextPrayer(now);
+          this.lastLoadedDate = todayKey;
+        } else {
+          await this.loadSchedule();
+        }
+      } else {
+        // New month — fetch fresh schedule
         await this.loadSchedule();
       }
     },
@@ -85,6 +128,7 @@ function prayApp() {
         if (entry) {
           this.todaySchedule = entry;
           this.computeNextPrayer(now);
+          this.lastLoadedDate = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
         } else {
           this.error = 'Jadwal hari ini tidak ditemukan.';
         }
